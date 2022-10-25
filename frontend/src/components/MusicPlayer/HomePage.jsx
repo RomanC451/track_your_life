@@ -1,24 +1,50 @@
 import React from "react";
-
-import CreateRoomPage from "./CreateRoomPage";
-import JoinRoomPage from "./JoinRoomPage";
-import RoomPage from "./RoomPage";
-
+import { Button, Typography } from "@material-ui/core";
 import {
-  MusicPlayerPages,
   useMusicPlayerContext,
+  MusicPlayerPages,
 } from "../../contexts/MusicPlayerContextProvider";
 
 const HomePage = () => {
-  const { currentPage } = useMusicPlayerContext();
+  const { resetRoomCode, redirectPage } = useMusicPlayerContext();
 
-  if (currentPage === MusicPlayerPages.Create) {
-    return <CreateRoomPage />;
-  } else if (currentPage === MusicPlayerPages.Join) {
-    return <JoinRoomPage />;
-  } else if (currentPage === MusicPlayerPages.Room) {
-    return <RoomPage />;
-  }
+  return (
+    <div className="flex-wrap w-full">
+      <div className="flex justify-center w-full pb-12">
+        <Typography component="h4" variant="h4">
+          House Party
+        </Typography>
+      </div>
+      <div className="flex justify-center">
+        <div className="pr-2">
+          <Button
+            variant="contained"
+            color="primary"
+            style={{ minWidth: "165px" }}
+            onClick={() => {
+              redirectPage(MusicPlayerPages.Join);
+            }}
+            size="large"
+          >
+            Join a Room
+          </Button>
+        </div>
+        <div className="pr-2">
+          <Button
+            variant="contained"
+            color="secondary"
+            style={{ minWidth: "165px" }}
+            onClick={() => {
+              redirectPage(MusicPlayerPages.Create);
+            }}
+            size="large"
+          >
+            Create a Room
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default HomePage;

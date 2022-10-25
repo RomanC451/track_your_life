@@ -14,7 +14,7 @@ import {
 } from "../../contexts/MusicPlayerContextProvider";
 
 const CreateRoomPage = () => {
-  const { setPage, currentRoomCode, setRoomCode } = useMusicPlayerContext();
+  const { redirectPage, setRoomCode } = useMusicPlayerContext();
 
   const defaultVotes = 2;
   const state = {
@@ -45,13 +45,9 @@ const CreateRoomPage = () => {
       .then((response) => response.json())
       .then((data) => {
         setRoomCode(data.code);
-        setPage(MusicPlayerPages.Room);
+        redirectPage(MusicPlayerPages.Room);
       });
   };
-
-  function redirectCreatePage() {
-    setPage(MusicPlayerPages.Join);
-  }
 
   return (
     <div className="flex-wrap w-full">
@@ -112,7 +108,9 @@ const CreateRoomPage = () => {
         <Button
           color="secondary"
           variant="contained"
-          onClick={redirectCreatePage}
+          onClick={() => {
+            redirectPage(MusicPlayerPages.Join);
+          }}
         >
           Join a Room
         </Button>

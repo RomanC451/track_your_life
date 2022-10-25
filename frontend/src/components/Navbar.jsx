@@ -121,11 +121,9 @@ const Navbar = () => {
         {isClicked.notification && <Notification />}
         {isClicked.userProfile && <UserProfile />}
 
-        {isClicked.musicPlayer && (
-          <MusicPlayerContextProvider>
-            <MusicPlayer />
-          </MusicPlayerContextProvider>
-        )}
+        <MusicPlayerContextProvider>
+          {isClicked.musicPlayer && <MusicPlayer />}
+        </MusicPlayerContextProvider>
       </div>
     </div>
   );

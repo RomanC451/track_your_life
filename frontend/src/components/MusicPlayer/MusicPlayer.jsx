@@ -1,9 +1,39 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { MdOutlineCancel } from "react-icons/md";
 import { Button } from "../";
+
 import HomePage from "./HomePage";
+import CreateRoomPage from "./CreateRoomPage";
+import JoinRoomPage from "./JoinRoomPage";
+import RoomPage from "./RoomPage";
+
+import {
+  MusicPlayerPages,
+  useMusicPlayerContext,
+} from "../../contexts/MusicPlayerContextProvider";
 
 const MusicPlayer = () => {
+  const { currentPage, currentRoomCode, setRoomCode } = useMusicPlayerContext();
+  useEffect(function userInRoom() {
+    fetch("/api/user-in-room")
+      .then((response) => response.json())
+      .then((data) => {
+        setRoomCode(data.roomCode);
+      });
+  }, []);
+
+  function renderCurrentPage() {
+    if (currentPage === MusicPlayerPages.Create) {
+      return <CreateRoomPage />;
+    } else if (currentPage === MusicPlayerPages.Join) {
+      return <JoinRoomPage />;
+    } else if (currentPage === MusicPlayerPages.Room || currentRoomCode) {
+      return <RoomPage />;
+    } else if (currentPage === MusicPlayerPages.Home) {
+      return <HomePage />;
+    }
+  }
+
   return (
     <div className="backdrop-blur w-full h-full fixed nav-item top-0 right-0 flex justify-center items-center">
       <div className=" h-[473px] w-[50%] rounded-lg bg-white drop-shadow-2xl flex items-center">
@@ -19,7 +49,7 @@ const MusicPlayer = () => {
           </div>
         </div>
         <div className="absolute flex w-full items-center">
-          <HomePage />
+          {renderCurrentPage()}
         </div>
       </div>
     </div>

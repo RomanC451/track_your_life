@@ -6,35 +6,38 @@ import {
 } from "../../contexts/MusicPlayerContextProvider";
 
 const JoinRoomPage = () => {
-  const { setPage } = useMusicPlayerContext();
+  const { redirectPage, setRoomCode } = useMusicPlayerContext();
 
   const [state, setState] = useState({
     roomCode: "",
     error: "",
   });
 
-  function redirectCreatePage() {
-    setPage(MusicPlayerPages.Create);
-  }
-
   function handleCodeChanged(e) {
     setState({ ...state, roomCode: e.target.value });
   }
 
-  function joinRoom() {
+  function joinButtonPressed(e) {
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        votes_to_skip: state.votesToSkip,
-        guest_can_pause: state.guestCanPause,
+        code: state.roomCode,
       }),
     };
-    fetch("/api/create-room", requestOptions)
-      .then((response) => response.json())
-      .then((data) => {
-        setRoomCode(data.code);
-        setPage(MusicPlayerPages.Room);
+
+    fetch("/api/join-room", requestOptions)
+      .then((response) => {
+        if (response.ok) {
+          setRoomCode(state.roomCode);
+
+          redirectPage(MusicPlayerPages.Room);
+        } else {
+          setState({ ...state, error: "Room not found." });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
       });
   }
 
@@ -57,7 +60,7 @@ const JoinRoomPage = () => {
         />
       </div>
       <div className="flex justify-center w-full flex-wrap pb-8">
-        <Button variant="contained" color="primary" onClick={joinRoom}>
+        <Button variant="contained" color="primary" onClick={joinButtonPressed}>
           Enter the Room
         </Button>
       </div>
@@ -65,7 +68,9 @@ const JoinRoomPage = () => {
         <Button
           variant="contained"
           color="secondary"
-          onClick={redirectCreatePage}
+          onClick={() => {
+            redirectPage(MusicPlayerPages.Create);
+          }}
         >
           Create a Room
         </Button>
