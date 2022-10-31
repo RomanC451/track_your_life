@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Button, Typography } from "@material-ui/core";
+import { Button, TableCell, Typography } from "@material-ui/core";
+
+import CreateRoomPage from "./CreateRoomPage";
+import MediaPlayer from "./MediaPlayer";
 
 import {
   useMusicPlayerContext,
@@ -14,7 +17,80 @@ const RoomPage = () => {
     votesToSkip: "",
     guestCanPause: "",
     isHost: "",
+    showSettings: "",
+    spotifyAuthenticated: false,
+    song: {},
   });
+
+  useEffect(() => {
+    refreshRoomDetails();
+    const interval = setInterval(currentSong, 250);
+    //currentSong();
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  function refreshRoomDetails() {
+    fetch("/api/get-room" + "?code=" + currentRoomCode)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setState((prevState) => {
+          return {
+            ...prevState,
+            votesToSkip: data.votes_to_skip,
+            guestCanPause: data.guest_can_pause,
+            isHost: data.is_host,
+          };
+        });
+        if (data.is_host) {
+          authenticateSpotify();
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        redirectPage(MusicPlayerPages.Home);
+      });
+  }
+
+  function authenticateSpotify() {
+    fetch("/spotify/is-authenticated")
+      .then((response) => response.json())
+      .then((data) => {
+        setState((prevState) => {
+          return { ...prevState, spotifyAuthenticated: data.status };
+        });
+        if (!data.status) {
+          fetch("/spotify/get-auth-url")
+            .then((response) => response.json())
+            .then((data) => {
+              window.location.replace(data.url);
+            });
+        }
+      });
+  }
+
+  function currentSong() {
+    fetch("/spotify/current-song")
+      .then((response) => {
+        if (!response.ok) {
+          return {};
+        } else {
+          return response.json();
+        }
+      })
+      .then((data) => {
+        setState((prevState) => {
+          return { ...prevState, song: data };
+        });
+      });
+  }
 
   function leaveButtonPressed() {
     const requestOptions = {
@@ -28,50 +104,68 @@ const RoomPage = () => {
     });
   }
 
-  useEffect(function getRoomDetails() {
-    fetch("/api/get-room" + "?code=" + currentRoomCode)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data);
-        setState({
-          votesToSkip: data.votes_to_skip,
-          guestCanPause: data.guest_can_pause,
-          isHost: data.is_host,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-        redirectPage(MusicPlayerPages.Home);
-      });
-  }, []);
+  function updateShowSettings(value) {
+    setState((prevState) => {
+      return { ...prevState, showSettings: value };
+    });
+  }
+
+  function renderSettingsButton() {
+    return (
+      <div className="flex justify-center w-full flex-wrap pb-8">
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            updateShowSettings(true);
+          }}
+        >
+          Settings
+        </Button>
+      </div>
+    );
+  }
+
+  function renderSettings() {
+    return (
+      <div className="flex-wrap w-full">
+        <div className="flex justify-center w-full flex-wrap">
+          <CreateRoomPage
+            update={true}
+            votesToSkip={state.votesToSkip}
+            guestCanPause={state.guestCanPause}
+            roomCode={currentRoomCode}
+            updateCallback={refreshRoomDetails}
+          />
+        </div>
+        <div className="flex justify-center w-full flex-wrap pb-8">
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => {
+              updateShowSettings(false);
+            }}
+          >
+            Close
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (state.showSettings) {
+    return renderSettings();
+  }
 
   return (
-    <div className="flex-wrap w-full">
-      <div className="flex justify-center w-full pb-8">
+    <div className="flex-wrap w-full ">
+      <div className="flex justify-center w-full pb-6 pt-4">
         <Typography component="h4" variant="h4">
           Code: {currentRoomCode}
         </Typography>
       </div>
-      <div className="flex justify-center w-full flex-wrap pb-8">
-        <Typography component="h6" variant="h6">
-          Votes: {state.votesToSkip}
-        </Typography>
-      </div>
-      <div className="flex justify-center w-full flex-wrap pb-8">
-        <Typography component="h6" variant="h6">
-          Guest can pause: {state.guestCanPause.toString()}
-        </Typography>
-      </div>
-      <div className="flex justify-center w-full flex-wrap pb-8">
-        <Typography component="h6" variant="h6">
-          Host: {state.isHost.toString()}
-        </Typography>
-      </div>
+      {<MediaPlayer {...state.song} />}
+      {state.isHost ? renderSettingsButton() : null}
       <div className="flex justify-center w-full flex-wrap pb-8">
         <Button
           variant="contained"

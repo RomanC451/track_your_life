@@ -34,6 +34,7 @@ const JoinRoomPage = () => {
           redirectPage(MusicPlayerPages.Room);
         } else {
           setState({ ...state, error: "Room not found." });
+          console.log(response.json());
         }
       })
       .catch((err) => {
