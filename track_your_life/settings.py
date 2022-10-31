@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-683o1i!nel&e!0j0b(h1eh+^vi^h4hdhiqx!9btfyk64b6qmb)"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -122,9 +122,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
-STATIC_ROOT = os.path.join(PROJECT_ROOT, "static")
+STATIC_ROOT = os.path.join(PROJECT_ROOT, "/frontend/static/")
 
-STATIC_URL = "static/"
+STATIC_URL = "/frontend/static/"
 
 django_heroku.settings(locals())
 
