@@ -16,10 +16,10 @@ import {
 
 import { ordersData, contextMenuItems, ordersGrid } from "../data/dummy";
 import { Header } from "../components";
-import { useStateContext } from "../contexts/ContextProvider";
+import { useAppStyleStateContext } from "../contexts/AppStyleContextProvider";
 
 const Orders = () => {
-  const { currentMode } = useStateContext();
+  const { currentMode } = useAppStyleStateContext();
 
   const editing = { allowDeleting: true, allowEditing: true };
   return (

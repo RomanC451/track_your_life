@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-683o1i!nel&e!0j0b(h1eh+^vi^h4hdhiqx!9btfyk64b6qmb)"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "API.apps.APIConfig",
+    "MusicPlayer.apps.MusicPlayerConfig",
     "rest_framework",
     "frontend.apps.FrontendConfig",
     "spotify.apps.SpotifyConfig",

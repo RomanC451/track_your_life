@@ -5,12 +5,15 @@ import App from "./App";
 
 import "./index.css";
 
-import { ContextProvider } from "./contexts/ContextProvider";
+import { AppGeneralContextProvider } from "./contexts/AppGeneralContextProvider";
+import { AppStyleContextProvider } from "./contexts/AppStyleContextProvider";
 
 const root = createRoot(document.getElementById("root"));
 
 root.render(
-  <ContextProvider>
-    <App />
-  </ContextProvider>
+  <AppGeneralContextProvider>
+    <AppStyleContextProvider>
+      <App />
+    </AppStyleContextProvider>
+  </AppGeneralContextProvider>
 );

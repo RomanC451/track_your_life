@@ -57,4 +57,4 @@ export const MusicPlayerContextProvider = ({ children }) => {
   );
 };
 
-export const useMusicPlayerContext = () => useContext(MusicPlayerContext);
+export const useMusicPlayerStateContext = () => useContext(MusicPlayerContext);

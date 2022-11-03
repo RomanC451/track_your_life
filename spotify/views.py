@@ -14,7 +14,7 @@ from .util import (
     pause_song,
     skip_song,
 )
-from API.models import Room
+from MusicPlayer.models import Room
 
 
 class AuthURL(APIView):

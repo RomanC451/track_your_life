@@ -25,34 +25,29 @@ import {
 
 import "./App.css";
 
-import { useStateContext } from "./contexts/ContextProvider";
+import { NavbarContextProvider } from "./contexts/NavbarContextProvider";
+import { useAppGeneralStateContext } from "./contexts/AppGeneralContextProvider";
+import { useAppStyleStateContext } from "./contexts/AppStyleContextProvider";
 
 const App = () => {
-  const {
-    setCurrentColor,
-    setCurrentMode,
-    currentMode,
-    activeMenu,
-    currentColor,
-    themeSettings,
-    setThemeSettings,
-    screenSize,
-  } = useStateContext();
+  const { sidebarActive, themeSettings, setThemeSettings, screenSize } =
+    useAppGeneralStateContext();
+  const { currentColor, currentThemeMode } = useAppStyleStateContext();
 
-  useEffect(() => {
+  /* useEffect(() => {
     const currentThemeColor = localStorage.getItem("colorMode");
     const currentThemeMode = localStorage.getItem("themeMode");
     if (currentThemeColor && currentThemeMode) {
       setCurrentColor(currentThemeColor);
       setCurrentMode(currentThemeMode);
     }
-  }, []);
+  }, []); */
 
   return (
-    <div className={currentMode === "Dark" ? "dark" : ""}>
+    <div className={currentThemeMode === "Dark" ? "dark" : ""}>
       <BrowserRouter>
         <div className="flex dark:bg-main-dark-bg">
-          <div className="fixed right-4 bottom-4" style={{ zIndex: "1000" }}>
+          <div className="fixed right-4 bottom-4 z-1000">
             <TooltipComponent content="Settings" position="Top">
               <button
                 type="button"
@@ -64,31 +59,23 @@ const App = () => {
               </button>
             </TooltipComponent>
           </div>
-          {activeMenu ? (
-            <div className="w-72 fixed sidebar dark:bg-secondary-dark-bg bg-white ">
-              <Sidebar />
-            </div>
-          ) : (
-            <div className="w-0 dark:bg-secondary-dark-bg">
-              <Sidebar />
-            </div>
-          )}
+          <Sidebar />
           <div
             id="mydiv"
             className={
-              activeMenu
+              sidebarActive
                 ? "dark:bg-main-dark-bg bg-white min-h-screen md:ml-72 w-full  "
                 : "bg-white dark:bg-main-dark-bg  w-full min-h-screen flex-2 "
             }
             style={
-              activeMenu && screenSize > 900
+              sidebarActive && screenSize > 900
                 ? { width: `${screenSize - 288}px` }
                 : {}
             }
           >
-            <div className="static  dark:bg-main-dark-bg navbar w-full ">
+            <NavbarContextProvider>
               <Navbar />
-            </div>
+            </NavbarContextProvider>
             <div>
               {themeSettings && <ThemeSettings />}
 

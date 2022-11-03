@@ -13,10 +13,10 @@ import {
 
 import { scheduleData } from "../data/dummy";
 import { Header } from "../components";
-import { useStateContext } from "../contexts/ContextProvider";
+import { useAppStyleStateContext } from "../contexts/AppStyleContextProvider";
 
 const Calendar = () => {
-  const { currentMode } = useStateContext();
+  const { currentThemeMode } = useAppStyleStateContext();
   return (
     <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white dark:bg-gray-bg rounded-3xl">
       <Header category="App" title="Calendar" />
@@ -24,7 +24,7 @@ const Calendar = () => {
         height="650px"
         eventSettings={{ dataSource: scheduleData }}
         selectedDate={new Date(2021, 0, 10)}
-        backgroundColor={currentMode === "Dark" ? "#33373E" : "#fff"}
+        backgroundColor={currentThemeMode === "Dark" ? "#33373E" : "#fff"}
       >
         <Inject
           services={[Day, Week, WorkWeek, Month, Agenda, Resize, DragAndDrop]}

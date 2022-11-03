@@ -15,7 +15,8 @@ import {
   stackedPrimaryXAxis,
   stackedPrimaryYAxis,
 } from "../../data/dummy";
-import { useStateContext } from "../../contexts/ContextProvider";
+
+import { useAppStyleStateContext } from "../../contexts/AppStyleContextProvider";
 
 const onChartLoaded = (currentMode) => {
   let chart = document.getElementById("charts");
@@ -30,7 +31,7 @@ const onChartLoaded = (currentMode) => {
 const palette = ["#E94649", "#F6B53F", "#6FAAB0", "#C4C24A"];
 
 const Stacked = ({ width, height }) => {
-  const { currentMode } = useStateContext();
+  const { currentMode } = useAppStyleStateContext();
   return (
     <ChartComponent
       width={width}

@@ -4,11 +4,14 @@ import { BsCheck } from "react-icons/bs";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 
 import { themeColors } from "../data/dummy";
-import { useStateContext } from "../contexts/ContextProvider";
+import { useAppStyleStateContext } from "../contexts/AppStyleContextProvider";
+import { useAppGeneralStateContext } from "../contexts/AppGeneralContextProvider";
 
 const ThemeSettings = () => {
-  const { setColor, setMode, currentMode, currentColor, setThemeSettings } =
-    useStateContext();
+  const { currentColor, setColor, currentThemeMode, setThemeMode } =
+    useAppStyleStateContext();
+
+  const { setThemeSettingsActive } = useAppGeneralStateContext();
 
   return (
     <div className="bg-half-transparent w-screen fixed nav-item top-0 right-0">
@@ -17,7 +20,7 @@ const ThemeSettings = () => {
           <p className="font-semibold text-xl">Settings</p>
           <button
             type="button"
-            onClick={() => setThemeSettings(false)}
+            onClick={() => setThemeSettingsActive(false)}
             style={{ color: "rgb(153, 171, 180)", borderRadius: "50%" }}
             className="text-2xl p-3 hover:drop-shadow-xl hover:bg-light-gray"
           >
@@ -34,8 +37,8 @@ const ThemeSettings = () => {
               name="theme"
               value="Light"
               className="cursor-pointer"
-              onChange={setMode}
-              checked={currentMode === "Light"}
+              onChange={setThemeMode}
+              checked={currentThemeMode === "Light"}
             />
             <label htmlFor="light" className="ml-2 text-md cursor-poinmter">
               Light
@@ -48,8 +51,8 @@ const ThemeSettings = () => {
               name="theme"
               value="Dark"
               className="cursor-pointer"
-              onChange={setMode}
-              checked={currentMode === "Dark"}
+              onChange={setThemeMode}
+              checked={currentThemeMode === "Dark"}
             />
             <label htmlFor="dark" className="ml-2 text-md cursor-poinmter">
               Dark
